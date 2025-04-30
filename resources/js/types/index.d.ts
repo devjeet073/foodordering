@@ -36,4 +36,10 @@ export interface User {
     updated_at: string;
 }
 
+export interface Restaurant {
+    id: string
+    name: string
+    address: string
+}
+
 export type BreadcrumbItemType = BreadcrumbItem;
