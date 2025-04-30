@@ -42,7 +42,7 @@ jobs:
           SOURCE: "."
 
       - name: Run Remote/Artisan Commands
-        users: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
