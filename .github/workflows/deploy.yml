@@ -23,13 +23,13 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --optimize-autoloader --no-dev --no-progress --no-interaction --prefer-dist
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
+      # - name: Install Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '20'
 
-      - name: Install NPM dependencies
-        run: npm install && npm run build
+      # - name: Install NPM dependencies
+      #   run: npm install && npm run build
 
       - name: Debug SSH Key and Connection
         run: |
