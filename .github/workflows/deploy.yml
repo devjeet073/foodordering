@@ -10,18 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v2
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
         with:
-          php-version: '8.2'
-          extensions: mbstring, xml, curl, zip, gd, bcmath, fileinfo
-          coverage: none
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          port: 22
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: "cd /var/www/html && ./.scripts/deploy.sh"
+      # - name: Checkout code
+      #   uses: actions/checkout@v3
 
-      - name: Install Composer dependencies
-        run: composer install --optimize-autoloader --no-dev --no-progress --no-interaction --prefer-dist
+      # - name: Set up PHP
+      #   uses: shivammathur/setup-php@v2
+      #   with:
+      #     php-version: '8.2'
+      #     extensions: mbstring, xml, curl, zip, gd, bcmath, fileinfo
+      #     coverage: none
+
+      # - name: Install Composer dependencies
+      #   run: composer install --optimize-autoloader --no-dev --no-progress --no-interaction --prefer-dist
 
       # - name: Install Node.js
       #   uses: actions/setup-node@v3
@@ -31,21 +40,22 @@ jobs:
       # - name: Install NPM dependencies
       #   run: npm install && npm run build
 
-      - name: Debug SSH Key and Connection
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "echo 'SSH connection successful'"
+      # - name: Debug SSH Key and Connection
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+      #     chmod 600 ~/.ssh/deploy_key
+      #     ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "echo 'SSH connection successful'"
 
-      - name: Syncronize files to server
-        uses: easingthemes/ssh-deploy@v2.1.5
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: "/var/www/html/laravel"
-          SOURCE: "."
+      # - name: Syncronize files to server
+      #   uses: easingthemes/ssh-deploy@v2.1.5
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+      #     REMOTE_USER: ${{ secrets.REMOTE_USER }}
+      #     TARGET: "/var/www/html/laravel"
+      #     SOURCE: "."
+
 
       - name: Run Remote/Artisan Commands
         uses: appleboy/ssh-action@v0.1.6
